@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C++ Launch (GDB)", // 调试会话的名称
+            "type": "cppdbg", // 调试器类型
+            "request": "launch", // 请求类型
+            "program": "${workspaceFolder}/a.out", // 可执行文件的路径
+            "args": [], // 要传递给程序的命令行参数
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}", // 当前工作目录
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "", // 如果需要，指定构建任务的名称
+            "miDebuggerPath": "/usr/bin/gdb" // gdb 的路径
+        }
+    ]
+}

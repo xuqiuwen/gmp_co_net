@@ -1,14 +1,12 @@
+#include <iostream>
 #include <memory>
+#include <random>
+#include <thread>
 #include <unordered_map>
-class A {
- public:
-  A(int a){};
-  std::unique_ptr<int> array_;
-  //~A(){};
-};
-
 int main() {
-  std::unordered_map<int, A> a;
-  a.emplace(1, A(11));
+  std::jthread a;
+  std::cout << a.get_id() << std::endl;
+  a = std::jthread([]() { return 0; });
+  std::cout << a.get_id() << std::endl;
   return 0;
 }

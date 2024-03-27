@@ -6,6 +6,3 @@ size_t machine_count = 4;        // M数量
 size_t processor_count = 4;      // P数量
 size_t loop_size = 1024;         // 事件循环大小
 size_t channel_size = 64;        // 默认channel大小
-// std::atomic<size_t> uncompleted_task_count{0};  // 统计没完成的任务数目
-// std::mutex zero_mtx;                            // 互斥量
-// std::condition_variable zero_cv;  // 条件变量，控制计数器为0退出

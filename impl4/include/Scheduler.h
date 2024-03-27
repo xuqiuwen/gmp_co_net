@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "MutexSafeQueue.h"  //模板类不能前置声明吗
+#include "MutexSafeQueue.h"
 
 class Routine;
 class Machine;

@@ -32,5 +32,4 @@ class Processor {
   size_t max_size_;
   std::atomic<bool> shutdown_flag_;
   std::atomic<ProcessorState> state_;
-  Scheduler *scheduler_;
 };

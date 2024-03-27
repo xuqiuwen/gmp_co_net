@@ -1,10 +1,7 @@
-//
-// Created by benny on 2022/3/10.
-//
-#include <iostream>
 #include <chrono>
 #include <ctime>
 #include <iomanip>
+#include <iostream>
 #include <thread>
 
 inline char separator() {
@@ -36,8 +33,8 @@ std::stringstream &PrintTime(std::stringstream &ss) {
   // (remainder after division into seconds)
   auto ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
 
-  ss << std::put_time(std::localtime(&in_time_t), "%T")
-     << '.' << std::setfill('0') << std::setw(3) << ms.count();
+  ss << std::put_time(std::localtime(&in_time_t), "%T") << '.'
+     << std::setfill('0') << std::setw(3) << ms.count();
   return ss;
 }
 

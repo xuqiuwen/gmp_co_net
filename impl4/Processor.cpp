@@ -9,7 +9,6 @@ Processor::Processor(Scheduler *scheduler)
     : shutdown_flag_(true),
       state_(ProcessorState::Idle),
       max_size_(local_queue_size),
-      scheduler_(scheduler),
       routines_(local_queue_size) {}
 void Processor::Start() {
   shutdown_flag_.store(false, std::memory_order_seq_cst);
@@ -50,7 +49,7 @@ void Processor::ProcessFunction() {
           return;
         }
         // 请求帮助
-        routine = scheduler_->ScheduleRoutine();
+        routine = Scheduler::GetInstance().ScheduleRoutine();
         if (routine.has_value()) {
           routine->resume();
           break;

@@ -20,11 +20,11 @@ struct Task {
   };
 };
 
-// 轻量级的，包含句柄，可以直接复制，看成指针
+// 轻量级的，包含句柄，可以直接复制，看成指针。实际上没有必要，使用句柄就绪，这样只是好看点
 class Routine {
  public:
   explicit Routine(Task task) : handler_{task.handle_} {};
-  Routine(std::coroutine_handle<> handler) : handler_{handler} {};
+  explicit Routine(std::coroutine_handle<> handler) : handler_{handler} {};
   void resume() {
     // debug("恢复一个协程");
     // std::cout << handler_.address() << std::endl;

@@ -2,8 +2,8 @@
 
 #include "../include/RoutineIO.h"
 
-IOUringAsyncIO::IOUringAsyncIO() {
-  if (io_uring_queue_init(QUEUEDEPTH, &ring, 0) < 0) {
+IOUringAsyncIO::IOUringAsyncIO(size_t event_count) {
+  if (io_uring_queue_init(event_count, &ring, 0) < 0) {
     perror("io_uring_queue_init");
     exit(EXIT_FAILURE);
   }

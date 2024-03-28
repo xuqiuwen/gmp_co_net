@@ -11,7 +11,7 @@
 
 class EpollAsyncIO : public AsyncIO {
  public:
-  EpollAsyncIO();
+  EpollAsyncIO(size_t event_count);
   ~EpollAsyncIO() override;
   void async_read(int fd, char* buf, size_t count) override;
   void async_write(int fd, const char* buf, size_t count) override;
@@ -19,6 +19,7 @@ class EpollAsyncIO : public AsyncIO {
 
  private:
   int epoll_fd;
+  size_t event_count_;
   enum class Operation { Read, Write };
   struct Op {
     char* buf;

@@ -1,12 +1,13 @@
+#pragma once
 #include <atomic>
 #include <coroutine>
 #include <queue>
 #include <thread>
 #include <unordered_map>
 
-#include "./include/Routine.h"
-
-enum class IOType;
+// 类里有示例才用include
+#include "./AsyncIO/IOUringAsyncIO.h"
+#include "Routine.h"
 
 namespace std {
 template <>
@@ -20,33 +21,20 @@ struct hash<pair<int, IOType>> {
 }  // namespace std
 
 class EventLoop {
-  EventLoop() : shutdown_flag_(true) {}
-  void Start() {
-    shutdown_flag_.store(false, std::memory_order_seq_cst);
-    loop_thread_ = std::move(std::jthread([&] { Loop(); }));
-  }
-  void Stop() { shutdown_flag_.store(true, std::memory_order_seq_cst); }
-  void EventRegiste(int fd, IOType io_type, std::coroutine_handle<> handle) {
-    std::pair tpe(fd, io_type);
-    if (event_routine_map_.find(tpe) == event_routine_map_.end()) {
-      // 没找到
-      event_routine_map_.insert(tpe, {});
-    }
-    // 复制句柄构造一个协程包装，实际上直接使用句柄也行
-    event_routine_map_[tpe].push(Routine{handle});
-  }
+ public:
+  EventLoop(size_t loop_size);
+  void Start();
+  void Stop();
+  void EventRegiste(int fd, IOType io_type, std::coroutine_handle<> handle);
+  AsyncIO &getAsyncIO();
 
  private:
   std::atomic<bool> shutdown_flag_;
   std::jthread loop_thread_;
-  void Loop() {  // 等到一个完成的事件，唤醒对应协程
-    while (!shutdown_flag_.load(std::memory_order_seq_cst)) {
-      auto a = asyncio_.wait_for_completion();
-      event_routine_map_[a].front().resume();
-      event_routine_map_[a].pop();
-    }
-  }
+  // 可以替换为Eopll
+  IOUringAsyncIO async_io_;
   // 等待事件队列，要保证线程安全，FIFO
   std::unordered_map<std::pair<int, IOType>, std::queue<Routine>>
       event_routine_map_;
+  void Loop();
 };

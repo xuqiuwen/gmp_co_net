@@ -3,6 +3,7 @@
 #include "./include/Machine.h"
 #include "./include/Processor.h"
 #include "./include/Routine.h"
+#include "./include/Runtime.h"
 #include "./include/Scheduler.h"
 #define Go(func) r.GoGo(func)
 
@@ -30,7 +31,7 @@
 //   // std::this_thread::sleep_for(std::chrono::seconds(1));
 //   s.Stop();
 // }
-Scheduler& s = Scheduler::GetInstance();
+Runtime& r = Runtime::GetInstance();
 
 Task Sample1() {
   std::cout << "hello" << std::endl;
@@ -38,17 +39,17 @@ Task Sample1() {
 }
 Task Sample2() {
   std::cout << "hello" << std::endl;
-  s.SubmitRoutine(Routine{Sample1()});
+  r.getScheduler().SubmitRoutine(Routine{Sample1()});
   co_return;
 }
 
 int main() {
-  s.Start();
+  r.getScheduler().Start();
   int n = 100;
   while (n--) {
-    s.SubmitRoutine(Routine{Sample2()});
+    r.getScheduler().SubmitRoutine(Routine{Sample2()});
   }
   // P关闭时只考虑本地队列，放在全局队列要等一等
   // std::this_thread::sleep_for(std::chrono::seconds(1));
-  s.Stop();
+  r.getScheduler().Stop();
 }

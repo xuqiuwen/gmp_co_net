@@ -8,17 +8,16 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Machine.h"
 #include "MutexSafeQueue.h"
-
-class Routine;
-class Machine;
-class Processor;
+#include "Processor.h"
+#include "Routine.h"
 
 size_t Random(size_t l, size_t r);
 
 class Scheduler {
  public:
-  static Scheduler &GetInstance();
+  Scheduler(size_t machine_num, size_t processor_num, size_t global_queue_size);
   void Start();
   void Stop();
   void SubmitRoutine(Routine routine);
@@ -41,7 +40,6 @@ class Scheduler {
   std::mutex zero_mtx_;                            // 互斥量
   std::condition_variable zero_cv_;  // 条件变量，控制计数器为0退出
                                      // std::atomic<bool> running_flag_;
-  Scheduler(size_t machine_num, size_t processor_num, size_t global_queue_size);
   std::optional<Routine> PopRoutine();
   // 获取下标为index的P本地队列的一个routine
   std::optional<Routine> PopRoutineLocal(size_t index);

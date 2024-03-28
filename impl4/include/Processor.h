@@ -4,9 +4,7 @@
 #include <optional>
 
 #include "MutexSafeQueue.h"  //模板类不能前置声明吗
-
-class Routine;
-class Scheduler;
+#include "Routine.h"
 
 enum class ProcessorState {
   Idle,     // 队列为空，本地无G
@@ -16,7 +14,7 @@ enum class ProcessorState {
 
 class Processor {
  public:
-  Processor(Scheduler *scheduler);
+  Processor();
   void Start();
   void Stop();
   bool PushRoutine(Routine routine);

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <thread>
 
-class Processor;
+#include "Processor.h"
 
 enum class MachineState {
   Spinning,   // 自旋中

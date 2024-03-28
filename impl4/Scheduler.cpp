@@ -13,10 +13,25 @@ size_t Random(size_t l, size_t r) {
   return distrib(gen);
 }
 
-Scheduler &Scheduler::GetInstance() {
-  static Scheduler instance(machine_count, processor_count, global_queue_size);
-  return instance;
-}
+Scheduler::Scheduler(size_t machine_num, size_t processor_num,
+                     size_t global_queue_size)
+    : machine_processor_map_(machine_num),
+      machines_(machine_num),
+      processors_(processor_num),
+      // running_flag_(false),
+      global_queue_routines_(global_queue_size) {
+  for (size_t i = 0; i < machine_num; i++) {
+    machines_[i] = std::make_unique<Machine>();
+    // thread_machine_map_.emplace(machines_[i]->,i);
+  }
+  for (size_t i = 0; i < processor_num; i++) {
+    processors_[i] = std::make_unique<Processor>();
+  }
+  for (size_t i = 0; i < machines_.size(); i++) {
+    machine_processor_map_[i] = i;
+  }
+}  // 如果是无锁队列，记得设置大小
+
 void Scheduler::Start() {
   // running_flag_.store(true, std::memory_order_seq_cst);
   for (auto &processor : processors_) {
@@ -84,24 +99,6 @@ std::optional<Routine> Scheduler::ScheduleRoutine() {
   return PopRoutineLocal(Random(0, processor_count - 1));
 };
 
-Scheduler::Scheduler(size_t machine_num, size_t processor_num,
-                     size_t global_queue_size)
-    : machine_processor_map_(machine_num),
-      machines_(machine_num),
-      processors_(processor_num),
-      // running_flag_(false),
-      global_queue_routines_(global_queue_size) {
-  for (size_t i = 0; i < machine_num; i++) {
-    machines_[i] = std::make_unique<Machine>();
-    // thread_machine_map_.emplace(machines_[i]->,i);
-  }
-  for (size_t i = 0; i < processor_num; i++) {
-    processors_[i] = std::make_unique<Processor>(this);
-  }
-  for (size_t i = 0; i < machines_.size(); i++) {
-    machine_processor_map_[i] = i;
-  }
-}  // 如果是无锁队列，记得设置大小
 // 有则返回，无则返回nullopt，要是原子的，因此上面的不行
 std::optional<Routine> Scheduler::PopRoutine() {
   // debug("全局队列pop");

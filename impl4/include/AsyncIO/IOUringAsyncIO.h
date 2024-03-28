@@ -9,10 +9,10 @@
 #include <vector>
 
 #include "AsyncIO.h"
-#define QUEUEDEPTH 256  // 记得移到全局变量
+
 class IOUringAsyncIO : public AsyncIO {
  public:
-  IOUringAsyncIO();
+  IOUringAsyncIO(size_t event_count);
   ~IOUringAsyncIO() override;
   void async_read(int fd, char* buf, size_t nbytes) override;
   void async_write(int fd, const char* buf, size_t nbytes) override;

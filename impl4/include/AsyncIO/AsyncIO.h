@@ -1,7 +1,7 @@
 #pragma once
 #include <cstddef>
 
-enum class IOType;
+enum class IOType : int { Read, Write };
 
 class AsyncIO {
  public:

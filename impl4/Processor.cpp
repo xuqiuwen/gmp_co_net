@@ -2,10 +2,11 @@
 
 #include "./include/MutexSafeQueue.h"
 #include "./include/Routine.h"
+#include "./include/Runtime.h"
 #include "./include/Scheduler.h"
 #include "./include/TotalVariable.h"
 
-Processor::Processor(Scheduler *scheduler)
+Processor::Processor()
     : shutdown_flag_(true),
       state_(ProcessorState::Idle),
       max_size_(local_queue_size),
@@ -49,7 +50,7 @@ void Processor::ProcessFunction() {
           return;
         }
         // 请求帮助
-        routine = Scheduler::GetInstance().ScheduleRoutine();
+        routine = Runtime::GetInstance().getScheduler().ScheduleRoutine();
         if (routine.has_value()) {
           routine->resume();
           break;

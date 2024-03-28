@@ -1,7 +1,7 @@
 #include "../include/AsyncIO/EpollAsyncIO.h"
 
 #include "../include/RoutineIO.h"
-EpollAsyncIO::EpollAsyncIO() {
+EpollAsyncIO::EpollAsyncIO(size_t event_count) : event_count_(event_count) {
   epoll_fd = epoll_create1(0);
   if (epoll_fd == -1) {
     perror("epoll_create1");
@@ -35,9 +35,9 @@ void EpollAsyncIO::async_write(int fd, const char* buf, size_t count) {
 
 // 待修改
 std::pair<int, IOType> EpollAsyncIO::wait_for_completion() {
-  const int MAX_EVENTS = 10;
-  epoll_event events[MAX_EVENTS];
-  int n = epoll_wait(epoll_fd, events, MAX_EVENTS, -1);
+  const int event_count_ = 10;
+  epoll_event events[event_count_];
+  int n = epoll_wait(epoll_fd, events, event_count_, -1);
   for (int i = 0; i < n; i++) {
     int fd = events[i].data.fd;
     auto& op = operations[fd];
@@ -48,4 +48,5 @@ std::pair<int, IOType> EpollAsyncIO::wait_for_completion() {
     }
     epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, nullptr);
   }
+  return {0, IOType::Read};
 }

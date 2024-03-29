@@ -7,7 +7,9 @@
 
 // 类里有示例才用include
 #include "./AsyncIO/IOUringAsyncIO.h"
+#include "./Units/MutexSafeHashQueue.h"
 #include "Routine.h"
+#include "Scheduler.h"
 
 namespace std {
 template <>
@@ -27,7 +29,7 @@ class EventLoop {
   void Stop();
   void EventRegiste(int fd, IOType io_type, std::coroutine_handle<> handle);
   Routine EventDelete(std::pair<int, IOType> key);
-  AsyncIO &getAsyncIO();
+  IOUringAsyncIO &getAsyncIO();
 
  private:
   std::atomic<bool> shutdown_flag_;
@@ -35,8 +37,7 @@ class EventLoop {
   // 可以替换为Eopll
   IOUringAsyncIO async_io_;
   // 等待事件队列，要保证线程安全，FIFO
-  std::unordered_map<std::pair<int, IOType>, std::queue<Routine>>
-      event_routine_map_;
-  std::mutex mtx_;
+  MutexSafeHashQueue<std::pair<int, IOType>, Routine> event_routine_map_;
+
   void Loop();
 };

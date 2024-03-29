@@ -1,10 +1,10 @@
 #include "./include/Processor.h"
 
-#include "./include/MutexSafeQueue.h"
 #include "./include/Routine.h"
 #include "./include/Runtime.h"
 #include "./include/Scheduler.h"
 #include "./include/TotalVariable.h"
+#include "./include/Units/MutexSafeQueue.h"
 
 Processor::Processor()
     : shutdown_flag_(true),

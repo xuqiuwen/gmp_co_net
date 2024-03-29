@@ -14,27 +14,22 @@ void EventLoop::Stop() {
 }
 void EventLoop::EventRegiste(int fd, IOType io_type,
                              std::coroutine_handle<> handle) {
-  std::pair<int, IOType> tpe(fd, io_type);
-  std::unique_lock lock(mtx_);
-  if (event_routine_map_.find(tpe) == event_routine_map_.end()) {
-    // 没找到
-    event_routine_map_.insert({tpe, {}});
-  }
-  // 复制句柄构造一个协程包装，实际上直接使用句柄也行
-  event_routine_map_[tpe].push(Routine{handle});
+  std::pair<int, IOType> key(fd, io_type);
+  event_routine_map_.push(key, Routine{handle});
 }
 Routine EventLoop::EventDelete(std::pair<int, IOType> key) {
-  std::unique_lock lock(mtx_);
-  auto routine = event_routine_map_[key].front();
-  event_routine_map_[key].pop();
-  return routine;
+  auto routine = event_routine_map_.pop(key);
+  if (!routine.has_value()) {
+    exit(1);
+  }
+  return routine.value();
 }
 
 void EventLoop::Loop() {  // 等到一个完成的事件，唤醒对应协程
   while (!shutdown_flag_.load(std::memory_order_seq_cst)) {
     auto key = async_io_.wait_for_completion();
     if (!key.has_value()) {
-      continue;  // 超时用于触发shutdown_flag_
+      continue;  // 超时返回用于触发shutdown_flag_
     }
     auto routine = EventDelete(key.value());
     // 调度执行，要用新接口，放到合适的M上
@@ -42,4 +37,4 @@ void EventLoop::Loop() {  // 等到一个完成的事件，唤醒对应协程
   }
 }
 
-AsyncIO& EventLoop::getAsyncIO() { return async_io_; }
+IOUringAsyncIO& EventLoop::getAsyncIO() { return async_io_; }

@@ -3,7 +3,7 @@
 #include <cassert>
 #include <optional>
 
-#include "MutexSafeQueue.h"  //模板类不能前置声明吗
+#include "./Units/LockFreeQueue.h"
 #include "Routine.h"
 
 enum class ProcessorState {
@@ -26,7 +26,7 @@ class Processor {
   void ProcessFunction();
 
  private:
-  MutexSafeQueue<Routine> routines_;
+  LockFreeQueue<Routine> routines_;
   size_t max_size_;
   std::atomic<bool> shutdown_flag_;
   std::atomic<ProcessorState> state_;

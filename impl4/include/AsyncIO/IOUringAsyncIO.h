@@ -20,8 +20,8 @@ class IOUringAsyncIO : public AsyncIO {
 
  private:
   io_uring ring;
-  std::mutex mtx_;  // 保证并发的线程安全
-  // 潜在的优化方向，为每个M配备一个AsyncIO，实现无锁
-  // 哈希表也要拆分成M个，也无锁
-  // 本地队列也不需要互斥
+  std::mutex mtx_;  // 保证IOUringAsyncIO的并发的线程安全
+  // 潜在的优化方向，为每个M配备一个AsyncIO，不用互斥了就
+  // 哈希表也要拆分成M个，也不用互斥了就。
+  // 调整窃取策略和本地队列，不需要互斥；不改策略，直接使用无锁队列
 };

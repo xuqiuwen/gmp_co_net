@@ -37,6 +37,7 @@ Task Sample1() {
   std::cout << "sample1" << std::endl;
   co_await r.GetInstance().getRoutineIO().RoutineWrite(1, "hello\n", 7);
   co_await r.GetInstance().getRoutineIO().RoutineWrite(1, "bye\n", 5);
+  co_await r.GetInstance().getRoutineIO().RoutineWrite(1, "pig\n", 5);
   co_return;
 }
 Task Sample2() {

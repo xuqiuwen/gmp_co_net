@@ -1,15 +1,6 @@
 #include <iostream>
 
-#include "./src/include/Channel.h"
-#include "./src/include/Runtime.h"
-
-#define GO(func) Runtime::GetInstance().getScheduler().SubmitNewRoutine(func)
-#define GO_WRITE(a, b, c) \
-  Runtime::GetInstance().getRoutineIO().RoutineWrite(a, b, c)
-#define GO_READ(a, b, c) \
-  Runtime::GetInstance().getRoutineIO().RoutineRead(a, b, c)
-#define GOSTART Runtime::GetInstance().Start()
-#define GOSTOP Runtime::GetInstance().Stop()
+#include "./LibGoRoutine.h"
 
 Task sample_coroutine_1() {  // 示例协程函数
   std::cout << "任务1开始输入" << std::endl;
@@ -80,9 +71,7 @@ void channelTest(Channel<int> &ch) {
 }
 
 int main() {
-  GOSTART;
-  // 注意生命周期，不能写在ChannelTest里
-  Channel<int> ch(100);
+  GO_START;
+  GO_CHANNEL<int> ch(100);
   channelTest(ch);
-  GOSTOP;
 }

@@ -6,7 +6,9 @@
             "type": "cppdbg", // 调试器类型
             "request": "launch", // 请求类型
             "program": "${workspaceFolder}/a.out", // 可执行文件的路径
-            "args": [], // 要传递给程序的命令行参数
+            "args": [
+                "8889"
+            ], // 要传递给程序的命令行参数
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}", // 当前工作目录
             "environment": [],

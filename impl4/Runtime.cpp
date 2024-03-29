@@ -15,6 +15,7 @@ Runtime& Runtime::GetInstance() {
 }
 
 Scheduler& Runtime::getScheduler() { return scheduler_; }
+RoutineIO& Runtime::getRoutineIO() { return routineio_; }
 
 Runtime::Runtime()
     : routineio_(event_size),

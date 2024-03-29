@@ -34,22 +34,24 @@
 Runtime& r = Runtime::GetInstance();
 
 Task Sample1() {
-  std::cout << "hello" << std::endl;
+  std::cout << "sample1" << std::endl;
+  co_await r.GetInstance().getRoutineIO().RoutineWrite(1, "hello\n", 7);
+  co_await r.GetInstance().getRoutineIO().RoutineWrite(1, "bye\n", 5);
   co_return;
 }
 Task Sample2() {
-  std::cout << "hello" << std::endl;
-  r.getScheduler().SubmitRoutine(Routine{Sample1()});
+  std::cout << "sample2" << std::endl;
+  r.getScheduler().SubmitNewRoutine(Routine{Sample1()});
   co_return;
 }
 
 int main() {
-  r.getScheduler().Start();
+  r.Start();
   int n = 100;
   while (n--) {
-    r.getScheduler().SubmitRoutine(Routine{Sample2()});
+    r.getScheduler().SubmitNewRoutine(Routine{Sample2()});
   }
   // P关闭时只考虑本地队列，放在全局队列要等一等
   // std::this_thread::sleep_for(std::chrono::seconds(1));
-  r.getScheduler().Stop();
+  r.Stop();
 }

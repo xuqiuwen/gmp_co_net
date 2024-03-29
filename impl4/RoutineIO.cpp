@@ -26,11 +26,11 @@ EventLoop &RoutineIO::getEventLoop() { return event_loop_; }
 void RoutineReadAwaiter::await_suspend(std::coroutine_handle<> handle) {
   routineio_->getEventLoop().EventRegiste(fd_, IOType::Read,
                                           handle);  // 注册事件
-  routineio_->RoutineRead(fd_, buf_, nbytes_);      // 异步读
+  routineio_->AsyncRead(fd_, buf_, nbytes_);        // 异步读
 }
 
 void RoutineWriteAwaiter::await_suspend(std::coroutine_handle<> handle) {
   routineio_->getEventLoop().EventRegiste(fd_, IOType::Write,
                                           handle);  // 注册事件
-  routineio_->RoutineWrite(fd_, buf_, nbytes_);     // 异步写
+  routineio_->AsyncWrite(fd_, buf_, nbytes_);       // 异步写
 }

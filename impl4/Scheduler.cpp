@@ -59,7 +59,7 @@ void Scheduler::Stop() {
 //   return global_queue_routines_.Push(routine);
 // }
 // 先放入本地，满了就放入全局
-void Scheduler::SubmitRoutine(Routine routine) {
+void Scheduler::SubmitNewRoutine(Routine routine) {
   uncompleted_task_count_.fetch_add(1);
   // 没找到P，主线程就找不到，直接放入全局队列
   if (thread_machine_map_.find(std::this_thread::get_id()) ==
@@ -80,6 +80,15 @@ void Scheduler::SubmitRoutine(Routine routine) {
   }
   exit(1);
 };
+// 提交事件完成的协程，是事件循环线程触发的，因此会放入全局队列
+// 后续可以考虑随机选一个或者原线程
+void Scheduler::SubmitEventRoutine(Routine routine) {
+  if (global_queue_routines_.Push(routine)) {
+    return;
+  }
+  exit(1);
+};
+
 // 完成一个协程后，通知调度器
 void Scheduler::CompleteRoutine() {
   uncompleted_task_count_.fetch_sub(1);

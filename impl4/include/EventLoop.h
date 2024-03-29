@@ -26,6 +26,7 @@ class EventLoop {
   void Start();
   void Stop();
   void EventRegiste(int fd, IOType io_type, std::coroutine_handle<> handle);
+  Routine EventDelete(std::pair<int, IOType> key);
   AsyncIO &getAsyncIO();
 
  private:
@@ -36,5 +37,6 @@ class EventLoop {
   // 等待事件队列，要保证线程安全，FIFO
   std::unordered_map<std::pair<int, IOType>, std::queue<Routine>>
       event_routine_map_;
+  std::mutex mtx_;
   void Loop();
 };

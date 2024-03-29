@@ -27,7 +27,7 @@ struct RoutineReadAwaiter {  // 异步读等待器
       : fd_{fd}, buf_{buf}, nbytes_{nbytes}, routineio_{routineio} {}
   bool await_ready() const noexcept { return false; }  // 上来就挂起
   void await_suspend(std::coroutine_handle<> handle);
-  void await_resume() {}  // 恢复什么也不干
+  void await_resume() {}  // 恢复调度执行，在EventLoop中实现就行
 };
 
 struct RoutineWriteAwaiter {  // 异步写等待器

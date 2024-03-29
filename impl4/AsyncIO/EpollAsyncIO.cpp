@@ -34,7 +34,8 @@ void EpollAsyncIO::async_write(int fd, const char* buf, size_t count) {
 }
 
 // 待修改
-std::pair<int, IOType> EpollAsyncIO::wait_for_completion() {
+std::optional<std::pair<int, IOType>> EpollAsyncIO::wait_for_completion() {
+  return std::nullopt;
   const int event_count_ = 10;
   epoll_event events[event_count_];
   int n = epoll_wait(epoll_fd, events, event_count_, -1);
@@ -48,5 +49,5 @@ std::pair<int, IOType> EpollAsyncIO::wait_for_completion() {
     }
     epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, nullptr);
   }
-  return {0, IOType::Read};
+  return std::pair{0, IOType::Read};
 }

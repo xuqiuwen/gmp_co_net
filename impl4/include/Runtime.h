@@ -9,6 +9,7 @@ class Runtime {
   void Stop();
   static Runtime& GetInstance();
   Scheduler& getScheduler();
+  RoutineIO& getRoutineIO();
 
  private:
   Runtime();

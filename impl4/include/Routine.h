@@ -26,7 +26,7 @@ class Routine {
   explicit Routine(Task task) : handler_{task.handle_} {};
   explicit Routine(std::coroutine_handle<> handler) : handler_{handler} {};
   void resume() {
-    // debug("恢复一个协程");
+    // debug("恢复执行一个协程");
     // std::cout << handler_.address() << std::endl;
     handler_.resume();
   }

@@ -15,7 +15,7 @@ class EpollAsyncIO : public AsyncIO {
   ~EpollAsyncIO() override;
   void async_read(int fd, char* buf, size_t count) override;
   void async_write(int fd, const char* buf, size_t count) override;
-  std::pair<int, IOType> wait_for_completion() override;
+  std::optional<std::pair<int, IOType>> wait_for_completion() override;
 
  private:
   int epoll_fd;

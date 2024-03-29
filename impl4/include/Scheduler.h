@@ -20,7 +20,8 @@ class Scheduler {
   Scheduler(size_t machine_num, size_t processor_num, size_t global_queue_size);
   void Start();
   void Stop();
-  void SubmitRoutine(Routine routine);
+  void SubmitNewRoutine(Routine routine);
+  void SubmitEventRoutine(Routine routine);
   // 完成一个协程后，通知调度器
   void CompleteRoutine();
 

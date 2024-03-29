@@ -4,7 +4,7 @@
 #include "./include/Processor.h"
 #include "./include/Routine.h"
 #include "./include/TotalVariable.h"
-#include "./include/Units/LockFreeQueue.h"
+#include "./include/Units/MutexSafeQueue.h"
 
 size_t Random(size_t l, size_t r) {
   std::random_device rd;

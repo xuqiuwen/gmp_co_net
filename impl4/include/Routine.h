@@ -24,8 +24,9 @@ struct Task {
 class Routine {
  public:
   Routine(){};
-  explicit Routine(Task task) : handler_{task.handle_} {};
-  explicit Routine(std::coroutine_handle<> handler) : handler_{handler} {};
+  Routine(Task task) : handler_{task.handle_} {};  // 支持隐式转换
+  Routine(std::coroutine_handle<> handler)
+      : handler_{handler} {};  // 支持隐式转换
   void resume() {
     // debug("恢复执行一个协程");
     // std::cout << handler_.address() << std::endl;

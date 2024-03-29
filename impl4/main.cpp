@@ -1,58 +1,91 @@
 #include <iostream>
 
+#include "./include/Channel.h"
 #include "./include/Machine.h"
 #include "./include/Processor.h"
 #include "./include/Routine.h"
 #include "./include/Runtime.h"
 #include "./include/Scheduler.h"
-#define Go(func) r.GoGo(func)
+#define GO(func) Runtime::GetInstance().getScheduler().SubmitNewRoutine(func)
+#define GO_WRITE(a, b, c) \
+  Runtime::GetInstance().getRoutineIO().RoutineWrite(a, b, c)
+#define GO_READ(a, b, c) \
+  Runtime::GetInstance().getRoutineIO().RoutineRead(a, b, c)
+#define GOSTART Runtime::GetInstance().Start()
+#define GOSTOP Runtime::GetInstance().Stop()
 
-// void func1() {
-//   Routine g(Sample());
-//   Processor p(nullptr);
-//   p.PushRoutine(g);
+Task sample_coroutine_1() {  // 示例协程函数
+  std::cout << "任务1开始输入" << std::endl;
+  char buf[100];
+  co_await GO_READ(0, buf, 100);  // 调用的异步读
+  std::cout << "输入" << buf << "成功" << std::endl;
+  char buf1[100] = "hello1\n";
+  co_await GO_WRITE(1, buf1, 7);
+  co_return;
+}
 
-//   Machine m(&p);
-//   m.Start();
-//   p.Start();
-//   p.SetState(ProcessorState::Running);
-//   m.SetState(MachineState::Executing);
-//   std::this_thread::sleep_for(std::chrono::seconds(2));
-//   m.Stop();
-//   p.Stop();
-// }
+Task sample_coroutine_2() {  // 示例协程函数
+  std::cout << "任务2开始计算" << std::endl;
+  std::this_thread::sleep_for(std::chrono::seconds(2));
+  std::cout << "任务2计算结果: 42" << std::endl;
+  co_return;
+}
 
-// void func2() {
-//   Routine g(Sample());
-//   Scheduler s(machine_count, processor_count);
-
-//   s.Start();
-//   s.SubmitRoutine(g);
-//   // std::this_thread::sleep_for(std::chrono::seconds(1));
-//   s.Stop();
-// }
-Runtime& r = Runtime::GetInstance();
+Task sample_coroutine_3() {  // 示例协程函数
+  std::cout << "任务3打算输出hello" << std::endl;
+  char buf[100] = "hello2\n";
+  co_await GO_WRITE(1, buf, 7);
+  co_return;
+}
 
 Task Sample1() {
   std::cout << "sample1" << std::endl;
-  co_await r.GetInstance().getRoutineIO().RoutineWrite(1, "hello\n", 7);
-  co_await r.GetInstance().getRoutineIO().RoutineWrite(1, "bye\n", 5);
-  co_await r.GetInstance().getRoutineIO().RoutineWrite(1, "pig\n", 5);
+  co_await GO_WRITE(1, "hello\n", 7);
+  co_await GO_WRITE(1, "bye\n", 5);
   co_return;
 }
 Task Sample2() {
   std::cout << "sample2" << std::endl;
-  r.getScheduler().SubmitNewRoutine(Routine{Sample1()});
+  GO(Sample1());
   co_return;
 }
 
-int main() {
-  r.Start();
+void routineTest() {
   int n = 100;
   while (n--) {
-    r.getScheduler().SubmitNewRoutine(Routine{Sample2()});
+    GO(Sample2());
   }
-  // P关闭时只考虑本地队列，放在全局队列要等一等
-  // std::this_thread::sleep_for(std::chrono::seconds(1));
-  r.Stop();
+}
+
+void IOtest() {
+  GO(sample_coroutine_1());
+  GO(sample_coroutine_2());
+  GO(sample_coroutine_3());
+}
+Task Producer(Channel<int> &channel) {
+  int n = 10;
+  while (n--) {
+    co_await channel.write(n);
+  }
+}
+
+Task Consumer(Channel<int> &channel) {
+  int n = 10;
+  while (n--) {
+    auto received = co_await channel.read();
+    std::cerr << received << std::endl;
+  }
+}
+
+void channelTest(Channel<int> &ch) {
+  GO(Consumer(ch));
+  GO(Producer(ch));
+}
+
+int main() {
+  GOSTART;
+  // 注意生命周期，不能写在ChannelTest里
+  Channel<int> ch(100);
+  channelTest(ch);
+  GOSTOP;
 }

@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "./Units/LockFreeQueue.h"
+#include "./Units/MutexSafeQueue.h"
 #include "Machine.h"
 #include "Processor.h"
 #include "Routine.h"
@@ -36,7 +36,7 @@ class Scheduler {
   // 保证先析构machines_，等待线程结束
   std::vector<std::unique_ptr<Machine>> machines_;
   // 全局协程队列
-  LockFreeQueue<Routine> global_queue_routines_;
+  MutexSafeQueue<Routine> global_queue_routines_;
   std::atomic<size_t> uncompleted_task_count_{0};  // 统计没完成的任务数目
   std::mutex zero_mtx_;                            // 互斥量
   std::condition_variable zero_cv_;  // 条件变量，控制计数器为0退出

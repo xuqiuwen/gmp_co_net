@@ -3,7 +3,7 @@
 #include <cassert>
 #include <optional>
 
-#include "./Units/LockFreeQueue.h"
+#include "./Units/MutexSafeQueue.h"
 #include "Routine.h"
 
 enum class ProcessorState {
@@ -26,7 +26,7 @@ class Processor {
   void ProcessFunction();
 
  private:
-  LockFreeQueue<Routine> routines_;
+  MutexSafeQueue<Routine> routines_;
   size_t max_size_;
   std::atomic<bool> shutdown_flag_;
   std::atomic<ProcessorState> state_;

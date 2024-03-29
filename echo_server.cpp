@@ -17,7 +17,7 @@ Task HandleClient(int clientFd) {
   while (true) {
     memset(buffer, 0, BUFFER_SIZE);
     // 读取客户端发送的数据
-    ssize_t bytesRead = co_await GO_READ(clientFd, buffer, BUFFER_SIZE);
+    ssize_t bytesRead = GO_READ(clientFd, buffer, BUFFER_SIZE);
     // std::cerr << "读取字节数" << bytesRead << std::endl;
     if (bytesRead <= 0) {
       // 读取失败或客户端断开连接
@@ -25,7 +25,7 @@ Task HandleClient(int clientFd) {
     }
 
     // 将接收到的数据回发给客户端
-    ssize_t bytesWrite = co_await GO_WRITE(clientFd, buffer, bytesRead);
+    ssize_t bytesWrite = GO_WRITE(clientFd, buffer, bytesRead);
     // std::cerr << "发送字节数" << bytesWrite << std::endl;
     // std::cerr << "一轮读写完成\n";
   }

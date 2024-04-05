@@ -123,5 +123,6 @@ std::optional<Routine> Scheduler::PopRoutineLocal(size_t index) {
 // 获取下标为index的P本地队列的一个routine
 bool Scheduler::PushRoutineLocal(Routine routine, size_t index) {
   // debug("窃取");
+  // std::cerr << "放入" << index << std::endl;
   return processors_[index]->PushRoutine(routine);
 }

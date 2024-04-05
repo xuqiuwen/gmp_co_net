@@ -65,7 +65,6 @@ make client ;生成 client.out
 
 锁争用问题基本解决，由于是 I/O 密集型测试，因此极限和单线程的情况下 QPS 相近。在 M 数量增加的情况下可进一步优化。
 
-### 优化 io_uring
 ## 扩展(待做)
 * 添加无阻塞的协程 sleep 机制
 * memory_order_seq_cst改为更松的限制

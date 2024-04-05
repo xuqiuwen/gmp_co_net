@@ -61,10 +61,11 @@ void Scheduler::Stop() {
 // 先放入本地，满了就放入全局
 void Scheduler::SubmitNewRoutine(Routine routine) {
   uncompleted_task_count_.fetch_add(1);
-  // 没找到P，主线程就找不到，直接放入全局队列
+  // 没找到P，主线程就找不到，直接放入全局队列，改为随机放入一个队列
   if (thread_machine_map_.find(std::this_thread::get_id()) ==
       thread_machine_map_.end()) {
-    global_queue_routines_.Push(routine);
+    PushRoutineLocal(routine, Random(0, processor_count - 1));
+    // global_queue_routines_.Push(routine);
     return;
   }
   // 获取线程id对应的machine
@@ -117,4 +118,10 @@ std::optional<Routine> Scheduler::PopRoutine() {
 std::optional<Routine> Scheduler::PopRoutineLocal(size_t index) {
   // debug("窃取");
   return processors_[index]->PopRoutine();
+}
+
+// 获取下标为index的P本地队列的一个routine
+bool Scheduler::PushRoutineLocal(Routine routine, size_t index) {
+  // debug("窃取");
+  return processors_[index]->PushRoutine(routine);
 }

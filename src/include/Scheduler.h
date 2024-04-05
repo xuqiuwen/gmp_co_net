@@ -44,4 +44,5 @@ class Scheduler {
   std::optional<Routine> PopRoutine();
   // 获取下标为index的P本地队列的一个routine
   std::optional<Routine> PopRoutineLocal(size_t index);
+  bool PushRoutineLocal(Routine routine, size_t index);
 };

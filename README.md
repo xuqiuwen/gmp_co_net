@@ -36,7 +36,6 @@ make client ;生成 client.out
 ## 模块间依赖关系
 ![image](https://github.com/xuqiuwen/gmp_co_net/assets/84625276/16e308f3-67ec-4d0d-9072-8bb00a62b3eb)
 ## 待添加功能
-* 添加无阻塞的协程 sleep 机制
 * memory_order_seq_cst改为更松的限制
 * 底层可选epoll作为事件监听机制，作为对照
 * 调整窃取策略和本地队列的调度方法，调整阻塞后协程调度策略

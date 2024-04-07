@@ -36,6 +36,25 @@ void IOUringAsyncIO::async_write(int fd, const char* buf, size_t nbytes) {
   }
   // std::cout << "提交写操作fd=" << fd << std::endl;
 }
+
+void IOUringAsyncIO::async_time(int time_out_fd, long long second,
+                                long long nano_second) {
+  __kernel_timespec ts{second, nano_second};
+  std::unique_lock<std::mutex> lock(mtx_);
+  struct io_uring_sqe* sqe = io_uring_get_sqe(&ring);
+  // 准备一个定时器事件
+  io_uring_prep_timeout(sqe, &ts, 0, 0);
+  auto data_ptr = new std::pair<int, IOType>(
+      time_out_fd,
+      IOType::Timeout);  // 使用 time_out_fd 作为文件描述符标识超时事件
+  sqe->user_data = reinterpret_cast<unsigned long long>(data_ptr);
+  int ret = io_uring_submit(&ring);
+  if (ret < 0) {
+    perror("io_uring_submit (timeout)");
+    exit(EXIT_FAILURE);
+  }
+}
+
 std::optional<std::pair<int, IOType>> IOUringAsyncIO::wait_for_completion(
     int& nbytes) {
   struct io_uring_cqe* cqe;

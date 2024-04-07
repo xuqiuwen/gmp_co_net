@@ -13,7 +13,7 @@ struct Task {
   Task(handle_type h) : handle_(h) {}
   struct promise_type {
    private:
-    int data_;  // 保存协程数据，比如异步读写的实际大小
+    int data_;  // 保存协程数据，比如异步读写的实际大小，定时器用不上
    public:
     void setData(int data) {
       // std::cerr << this << "setData" << data << std::endl;

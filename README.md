@@ -35,21 +35,19 @@ make client ;生成 client.out
 | `foo.read()`        | 协程间通信的通道的读操作，返回值为读到的值 。                  | `auto bar = co_await foo.read()` |
 ## 模块间依赖关系
 ![image](https://github.com/xuqiuwen/gmp_co_net/assets/84625276/16e308f3-67ec-4d0d-9072-8bb00a62b3eb)
+## 待添加功能
+* 添加无阻塞的协程 sleep 机制
+* memory_order_seq_cst改为更松的限制
+* 底层可选epoll作为事件监听机制，作为对照
+* 调整窃取策略和本地队列的调度方法，调整阻塞后协程调度策略
+* 为每achine配备一个AsyncIO，相应的事件哈希映射也要拆分每个machine一个
 ## 性能优化
-### 性能测试
-| Machine数量 | QPS     |
-| ----------- | ------- |
-| 1           | 47491.6 |
-| 2           | 23632.2 |
-| 4           | 18611.8 |
-
-随着 Machine 数量的增加，性能提升不升反降，考虑是锁争用激烈造成的
-### 发现性能瓶颈
-有两个地方使用了 mutex 互斥，事件映射 和 io_uring
-### 优化
+针对 echo_server 进行性能优化
+### 优化方向
+有两个地方使用了 mutex 互斥，事件循环的事件映射哈希表 和 io_uring 线程安全的互斥访问
 * 事件映射：无锁哈希表、自旋锁，锁分离技术
 * io_uring：批提交、自旋锁
-
+### 优化结果
 | Machine数量 | 事件循环 | io_uring | QPS     |
 | ----------- | -------- | -------- | ------- |
 | 2           | SpinLock | 不优化   | 25193.3 |
@@ -62,12 +60,3 @@ make client ;生成 client.out
 | 4           | SpinLock | SpinLock | 31322.3 |
 | 2           | 锁分离   | SpinLock | 48143.6 |
 | 4           | 锁分离   | SpinLock | 30270.8 |
-
-锁争用问题基本解决，由于是 I/O 密集型测试，因此极限和单线程的情况下 QPS 相近。在 M 数量增加的情况下可进一步优化。
-
-## 扩展(待做)
-* 添加无阻塞的协程 sleep 机制
-* memory_order_seq_cst改为更松的限制
-* 底层可选epoll作为事件监听机制，作为对照
-* 调整窃取策略和本地队列的调度方法，调整阻塞后协程调度策略
-* 为每achine配备一个AsyncIO，相应的事件哈希映射也要拆分每achine一个

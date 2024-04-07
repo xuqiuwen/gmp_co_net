@@ -79,6 +79,15 @@ void channelTest(Channel<int> &ch) {
   GO(Producer(ch));
 }
 
+Task SampleTime() {
+  std::cout << "开始计时" << std::endl;
+  co_await Runtime::GetInstance().getRoutineIO().RoutineTime(1, 0);
+  std::cout << "结束计时" << std::endl;
+  co_return;
+}
+
+void TimeTest() { GO(SampleTime()); }
+
 int main() {
   GOSTART;
   // 注意channel的生命周期，不能写在ChannelTest里

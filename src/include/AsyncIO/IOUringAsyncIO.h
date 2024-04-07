@@ -16,6 +16,7 @@ class IOUringAsyncIO : public AsyncIO {
   ~IOUringAsyncIO() override;
   void async_read(int fd, char* buf, size_t nbytes) override;
   void async_write(int fd, const char* buf, size_t nbytes) override;
+  void async_time(int time_out_fd, long long second, long long nano_second);
   std::optional<std::pair<int, IOType>> wait_for_completion(
       int& nbytes) override;
 

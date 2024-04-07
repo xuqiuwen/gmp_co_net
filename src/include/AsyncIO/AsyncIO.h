@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <optional>
 
-enum class IOType : int { Read, Write };
+enum class IOType : int { Read, Write, Timeout };
 
 class AsyncIO {
  public:

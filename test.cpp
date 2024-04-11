@@ -8,6 +8,8 @@
   co_await Runtime::GetInstance().getRoutineIO().RoutineWrite(a, b, c)
 #define GO_READ(a, b, c) \
   co_await Runtime::GetInstance().getRoutineIO().RoutineRead(a, b, c)
+#define GO_SLEEP(a, b) \
+  co_await Runtime::GetInstance().getRoutineIO().RoutineTime(a, b)
 #define GOSTART Runtime::GetInstance().Start()
 #define GOSTOP Runtime::GetInstance().Stop()
 
@@ -81,7 +83,7 @@ void channelTest(Channel<int> &ch) {
 
 Task SampleTime() {
   std::cout << "开始计时" << std::endl;
-  co_await Runtime::GetInstance().getRoutineIO().RoutineTime(1, 0);
+  GO_SLEEP(1, 0);
   std::cout << "结束计时" << std::endl;
   co_return;
 }

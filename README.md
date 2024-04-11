@@ -30,6 +30,7 @@ make client ;生成 client.out
 | `GO(func)`          | 启动一个新的协程。                                             | `GO(myRoutine)`                  |
 | `GO_WRITE(a, b, c)` | 协程写操作，将数据写入指定的文件描述符。返回值为实际写出大小。 | `GO_WRITE(fd, buffer, size)`     |
 | `GO_READ(a, b, c)`  | 协程读操作，从指定的文件描述符读取数据。返回值为实际读入大小。 | `GO_READ(fd, buffer, size)`      |
+| `GO_SLEEP(a, b)`    | 协程休眠操作，将该协程休眠一段时间。                           | `GO_SLEEP(seconds, nanoseconds)` |
 | `GO_CHANNEL`        | 定义一个协程间通信的通道。                                     | `GO_CHANNEL<int> foo;`           |
 | `foo.write(bar)`    | 协程间通信的通道的写操作。                                     | `co_await foo.write(1234)`       |
 | `foo.read()`        | 协程间通信的通道的读操作，返回值为读到的值 。                  | `auto bar = co_await foo.read()` |
